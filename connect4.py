@@ -4,6 +4,39 @@ import numpy as np
 
 pygame.init()
 
+class ConnectFourBot:
+    def __init__(self, rows, cols):
+        self.rows = rows
+        self.cols = cols
+        self.board = np.zeros((rows, cols), dtype = int)
+        
+    # Checks if a given column is valid to drop
+    def check_valid_move(self, col):
+        return self.board[0][col] == 0
+
+    # Makes the moves
+    def make_move(self, col, player):
+        row = self.rows - 1
+        while row >= 0:
+            if self.board[row][col] == 0:
+                self.board[row][col] = player
+                break
+            row -= 1
+            
+    # Verifies a move will win
+    def check_win(self, player):
+        # Checks for a column win
+        for row in range(self.rows):
+            for col in range(self.cols - 3):
+                if all(self.board[row][col] == player for i in range(4)):
+                    return True
+        # Checks for a row win
+        for row in range(self.rows - 3):
+                
+                        
+    
+
+
 # Constants
 WIDTH, HEIGHT = 700, 700  # Height increased to add a top row for drop selection
 ROWS, COLS = 6, 7
@@ -74,8 +107,8 @@ def winning_move(piece):
         for r in range(3, ROWS):
             if board[r][c] == piece and board[r - 1][c + 1] == piece and board[r - 2][c + 2] == piece and board[r - 3][c + 3] == piece:
                 return True
-
-# Main game loop
+        
+ # Main game loop
 game_over = False
 turn = 0  # 0 for Player 1 (RED), 1 for Player 2 (YELLOW)
 
