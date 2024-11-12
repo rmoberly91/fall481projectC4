@@ -113,7 +113,6 @@ while not game_over:
                 else:
                     continue
 
-                    
 
             # Player 2 Input
             else:
@@ -123,7 +122,7 @@ while not game_over:
                 if is_valid_location(col):
                     row = get_next_open_row(col)
                     drop_piece(row, col, 2)
-                    
+
                     if winning_move(2):
                         print("Player 2 wins!")
                         game_over = True
