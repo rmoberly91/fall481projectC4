@@ -42,10 +42,10 @@ def drop_piece(row, col, piece):
     board[row][col] = piece
 
 def is_valid_location(col):
-    return board[0][col] == 0
+    return board[ROWS-1][col] == 0
 
 def get_next_open_row(col):
-    for r in range(ROWS - 1, -1, -1):
+    for r in range(ROWS):
         if board[r][col] == 0:
             return r
 
@@ -110,6 +110,11 @@ while not game_over:
                         print("Player 1 wins!")
                         game_over = True
 
+                else:
+                    continue
+
+                    
+
             # Player 2 Input
             else:
                 pos_x = event.pos[0]
@@ -118,10 +123,13 @@ while not game_over:
                 if is_valid_location(col):
                     row = get_next_open_row(col)
                     drop_piece(row, col, 2)
-
+                    
                     if winning_move(2):
                         print("Player 2 wins!")
                         game_over = True
+
+                else:
+                    continue
 
             draw_board()
 
