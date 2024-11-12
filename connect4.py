@@ -28,6 +28,7 @@ class ConnectFourBot:
         # Checks for a column win
         for row in range(self.rows):
             for col in range(self.cols - 3):
+                # Adjust the self.board parameters to verify wins
                 if all(self.board[row][col] == player for i in range(4)):
                     return True
         # Checks for a row win
