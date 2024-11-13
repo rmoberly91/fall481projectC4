@@ -44,10 +44,12 @@ class ConnectFourBot:
                     if all(self.board[row+i][col + 3 - i] == player for i in range(4)):
                         return True
         return False
-
+    
+    # Helper function to chek for the board being full
     def is_board_full(self):
         return np.all(self.board != 0)
 
+    # Evaluation function for the end of the minimax
     def board_evaluation(self):
         # This is *really* rudimentary, we can re-engineer this as needed
         if self.check_win(2):
@@ -57,6 +59,7 @@ class ConnectFourBot:
         else:
             return 0
     
+    # Recursive minimax implementation
     def minimax(self, depth, is_max):
         if depth == 0 or self.check_win(1) or self.check_win(2) or self.is_board_full():
             return self.board_evaluation
@@ -94,8 +97,11 @@ class ConnectFourBot:
                     best_col = col
         return best_col
                                         
-    
+# Note: Bot is not integrated to program, we've gotta still do that!
 
+# TODO: Verify bot logic works with going first/second
+#       Test bot once operational
+#       
 
 # Constants
 WIDTH, HEIGHT = 700, 700  # Height increased to add a top row for drop selection
