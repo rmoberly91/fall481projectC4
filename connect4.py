@@ -45,8 +45,55 @@ class ConnectFourBot:
                         return True
         return False
 
+    def is_board_full(self):
+        return np.all(self.board != 0)
+
+    def board_evaluation(self):
+        # This is *really* rudimentary, we can re-engineer this as needed
+        if self.check_win(2):
+            return 100
+        elif self.check_win(1):
+            return -100
+        else:
+            return 0
     
-                        
+    def minimax(self, depth, is_max):
+        if depth == 0 or self.check_win(1) or self.check_win(2) or self.is_board_full():
+            return self.board_evaluation
+        
+        if is_max:
+            best_score = -np.inf
+            for col in range(self.cols):
+                if self.check_valid_move(col):
+                    self.make_move(col, 2)
+                    score = self.minimax(depth - 1, False)
+                    self.board[self.rows - 1][col] = 0
+                    best_score = max(score, best_score)
+            return best_score
+        else:
+            best_score = np.inf
+            for col in range(self.cols):
+                if self.check_valid_move(col):
+                    self.make_move(col, 1)
+                    score = self.minimax(depth - 1, True)
+                    self.board[self.rows - 1][col] = 0
+                    best_score = max(score, best_score)
+            return best_score
+        
+    def best_move(self, depth):
+        best_val = -np.inf
+        best_col = 1
+        for col in range(self.cols):
+            if self.check_valid_move(col):
+                self.make_move(col, 2)
+                score = self.minimax(depth - 1, False)
+                self.board[self.rows - 1][col] = 0
+
+                if score > best_val:
+                    best_val = score
+                    best_col = col
+        return best_col
+                                        
     
 
 
