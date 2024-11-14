@@ -65,7 +65,7 @@ def evaluate_moves(block, piece):
     
 def minimax( board, depth, alpha, beta, is_max):
     #checks for all available plays
-    all_plays = [p for p in range(COLS) if is_valid_location(p)]
+    all_plays = [p for p in range(COLS) if is_valid_location(board, p)]
         
     #these are all situations where the game is over
     end_of_game = winning_move(BOT_PIECE) or winning_move(PLAYER_PIECE) or len(all_plays) == 0
@@ -85,13 +85,13 @@ def minimax( board, depth, alpha, beta, is_max):
         v = -np.inf
         best_col = all_plays[0]
         for c in all_plays:
-            row = get_next_open_row(col)
+            row = get_next_open_row(c)
             temp_board = board.copy()
-            bot_drop_piece(temp_board, row, col, BOT_PIECE)
+            bot_drop_piece(temp_board, row, c, BOT_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, False)[1]
             if ingest_score > v:
                 v = ingest_score
-                best_col = col
+                best_col = c
             alpha = max(alpha, v)
             if alpha >= beta:
                 break
@@ -100,14 +100,14 @@ def minimax( board, depth, alpha, beta, is_max):
     else:
         v = np.inf
         best_col = all_plays[0]
-        for col in all_plays:
-            row = get_next_open_row(col)
+        for c in all_plays:
+            row = get_next_open_row(c)
             temp_board = board.copy()
-            bot_drop_piece(temp_board, row, col, PLAYER_PIECE)
+            bot_drop_piece(temp_board, row, c, PLAYER_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, True)[1]
             if ingest_score < v:
                 v = ingest_score
-                best_col = col
+                best_col = c
             beta = min(beta, v)
             if alpha >= beta:
                 break
@@ -115,7 +115,7 @@ def minimax( board, depth, alpha, beta, is_max):
     
 def bot_move(board):
     max_depth = 5
-    col, _ = minimax(board, max_depth, -np.inf, np.inf, True)
+    col = minimax(board, max_depth, -np.inf, np.inf, True)
     return col
 # Note: Bot is not integrated to program, we've gotta still do that!
  
@@ -161,9 +161,10 @@ def drop_piece(row, col, piece):
 def bot_drop_piece(b_board, row, col, piece):
     b_board[row][col] = piece
 
-def is_valid_location(col):
-    return board[ROWS-1][col] == 0
-
+def is_valid_location(board, col):
+    r = get_next_open_row(col)
+    return board[r][col] == 0
+    
 def get_next_open_row(col):
     for r in range(ROWS):
         if board[r][col] == 0:
@@ -221,7 +222,7 @@ while not game_over:
                 pos_x = event.pos[0]
                 col = pos_x // SQUARE_SIZE
 
-                if is_valid_location(col):
+                if is_valid_location(board, col):
                     row = get_next_open_row(col)
                     drop_piece(row, col, 1)
 
@@ -236,10 +237,10 @@ while not game_over:
             # Player 2 Input
             else:
                 col = bot_move(board)
-                if col >= 0:
+                if is_valid_location(board, col):
                     row = get_next_open_row(col)
                     drop_piece(row, col, 2)
-
+                    
                     if winning_move(2):
                         print("Player 2 wins!")
                         game_over = True
