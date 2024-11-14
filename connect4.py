@@ -9,105 +9,65 @@ ROWS, COLS = 6, 7
 SQUARE_SIZE = 100
 RADIUS = SQUARE_SIZE // 2 - 5
 board = [[0 for _ in range(COLS)] for _ in range(ROWS)]
+PLAYER_PIECE = 1
+BOT_PIECE = 2
 
 
-class ConnectFourBot:
-    def __init__(self, rows, cols):
-        self.rows = rows
-        self.cols = cols
-        
-    # Checks if a given column is valid to drop
-    def check_valid_move(self, col):
-        return board[ROWS-1][col] == 0
-
-    # Makes the moves
-    def make_move(self, col, player):
-        row = 0
-        while row < self.rows:
-            if board[row][col] == 0:
-                board[row][col] = player
-                return row
-            row += 1
-            
-    # Verifies a move will win
-    def check_win(self, player):
-        # Checks for a column win
-        for row in range(self.rows):
-            for col in range(self.cols - 3):
-                # Adjust the self.board parameters to verify wins
-                if all(board[row][col+i] == player for i in range(4)):
-                    return True
-        # Checks for a row win
-        for row in range(self.rows - 3):
-                for col in range(self.cols - 3):
-                    if all(board[row+i][col] == player for i in range(4)):
-                           return True
-        # Checks for diagonal win
-        for row in range(self.rows - 3):
-                for col in range(self.cols - 3):
-                    if all(board[row+i][col+i] == player for i in range(4)):
-                        return True
-                    if all(board[row+i][col + 3 - i] == player for i in range(4)):
-                        return True
-        return False
+def position_evaluation(board, piece):
+    score = 0
+    #Lorem Ipsum
+    # 
+    return score
     
-    # Helper function to chek for the board being full
-    def is_board_full(self):
-        return np.all(board != 0)
+def minimax( board, depth, alpha, beta, is_max):
+    #checks for all available plays
+    all_plays = [p for p in range(COLS) if is_valid_location(p)]
+        
+    #these are all situations where the game is over
+    end_of_game = winning_move(BOT_PIECE) or winning_move(PLAYER_PIECE) or len(all_plays) == 0
 
-    # Evaluation function for the end of the minimax
-    def board_evaluation(self):
-        # This is *really* rudimentary, we can re-engineer this as needed
-        if self.check_win(2):
-            return 100
-        elif self.check_win(1):
-            return -100
+    if(depth == 0 or end_of_game):
+        if end_of_game:
+            if winning_move(BOT_PIECE):
+                return None, 1124
+            elif winning_move(PLAYER_PIECE):
+                return None, -1124
+            else:
+                return None, 0
         else:
-            return 0
+            return None, position_evaluation(board, BOT_PIECE)
+        
+    if is_max:
+        v = -np.inf
+        best_col = all_plays[0]
+        for c in all_plays:
+            row = get_next_open_row(col)
+            temp_board = board.copy()
+            bot_drop_piece(temp_board, row, col, BOT_PIECE)
+            ingest_score = minimax(temp_board, depth - 1, alpha, beta, False)[1]
+            if ingest_score > v:
+                v = ingest_score
+                best_col = col
+            alpha = max(alpha, v)
+            if alpha >= beta:
+                break
+        return best_col, v
     
-    # Recursive minimax implementation
-    def minimax(self, depth, is_max):
-        if depth == 0 or self.check_win(1) or self.check_win(2) or self.is_board_full():
-            return self.board_evaluation()
-        
-        if is_max:
-            best_score = -np.inf
-            for col in range(self.cols):
-                if self.check_valid_move(col):
-                    row = self.make_move(col, 2)
-                    score = self.minimax(depth - 1, False)
-                    board[row][col] = 0
-                    best_score = max(score, best_score)
-            return best_score
-        else:
-            best_score = np.inf
-            for col in range(self.cols):
-                if self.check_valid_move(col):
-                    row = self.make_move(col, 1)
-                    score = self.minimax(depth - 1, True)
-                    board[row][col] = 0
-                    best_score = min(score, best_score)
-            return best_score
-        
-    def best_move(self, depth):
-        best_val = -np.inf
-        best_col = -1
-        for col in range(self.cols):
-            if self.check_valid_move(col):
-                row = self.make_move(col, 2)
-                score = self.minimax(depth - 1, False)
-                board[row][col] = 0
-
-                if score > best_val:
-                    best_val = score
-                    best_col = col
-                elif score == best_val:
-                    if abs(3 - col) < abs(3 - best_col):
-                        best_col = col
-
-        print(best_col)
-        return best_col
-                                        
+    else:
+        v = np.inf
+        best_col = all_plays[0]
+        for col in all_plays:
+            row = get_next_open_row(col)
+            temp_board = board.copy()
+            bot_drop_piece(temp_board, row, col, PLAYER_PIECE)
+            ingest_score = minimax(temp_board, depth - 1, alpha, beta, True)[1]
+            if ingest_score < v:
+                v = ingest_score
+                best_col = col
+            beta = min(beta, v)
+            if alpha >= beta:
+                break
+        return best_col, v
 # Note: Bot is not integrated to program, we've gotta still do that!
  
 # TODO: Verify bot logic works with going first/second
@@ -148,6 +108,10 @@ def draw_board():
 def drop_piece(row, col, piece):
     board[row][col] = piece
 
+# Function for the bot to drop pieces into a copy of the board for the minimax function
+def bot_drop_piece(b_board, row, col, piece):
+    b_board[row][col] = piece
+
 def is_valid_location(col):
     return board[ROWS-1][col] == 0
 
@@ -186,7 +150,7 @@ game_over = False
 turn = 0  # 0 for Player 1 (RED), 1 for Player 2 (YELLOW)
 
 draw_board()  # Initial draw
-bot = ConnectFourBot(ROWS, COLS)
+#bot = ConnectFourBot(ROWS, COLS)
 
 while not game_over:
     for event in pygame.event.get():
@@ -222,7 +186,7 @@ while not game_over:
 
             # Player 2 Input
             else:
-                col = bot.best_move(1)
+                #col = bot.best_move(1)
                 if col >= 0:
                     row = get_next_open_row(col)
                     drop_piece(row, col, 2)
