@@ -84,10 +84,10 @@ def minimax(board, depth, alpha, beta, is_max):
         v = -np.inf
         best_col = random.choice(all_plays)
         for c in all_plays:
-            row = get_next_open_row(board, c)
+            #row = get_next_open_row(board, c)
             temp_board = board.copy()
-            #row = get_next_open_row(temp_board, c)
-            drop_piece(temp_board, row, c, BOT_PIECE)
+            row = get_next_open_row(temp_board, c)
+            bot_drop_piece(temp_board, row, c, BOT_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, False)[1]
             if ingest_score > v:
                 v = ingest_score
@@ -101,10 +101,10 @@ def minimax(board, depth, alpha, beta, is_max):
         v = np.inf
         best_col = random.choice(all_plays)
         for c in all_plays:
-            row = get_next_open_row(board, c)
+            #row = get_next_open_row(board, c)
             temp_board = board.copy()
-            #row = get_next_open_row(temp_board, c)
-            drop_piece(temp_board, row, c, PLAYER_PIECE)
+            row = get_next_open_row(temp_board, c)
+            bot_drop_piece(temp_board, row, c, PLAYER_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, True)[1]
             if ingest_score < v:
                 v = ingest_score
@@ -149,13 +149,12 @@ def draw_board():
                 pygame.draw.circle(screen, YELLOW, (col * SQUARE_SIZE + SQUARE_SIZE // 2, HEIGHT - (row * SQUARE_SIZE + SQUARE_SIZE // 2)), RADIUS)
     pygame.display.update()
 
-def drop_piece(board, row, col, piece):
+def drop_piece(row, col, piece):
     board[row][col] = piece
 
 # Function for the bot to drop pieces into a copy of the board for the minimax function
-#def bot_drop_piece(board, row, col, piece):
-#    b_board = board.copy()
-#    b_board[row][col] = piece
+def bot_drop_piece(b_board, row, col, piece):
+    b_board[row][col] = piece
 
 def is_valid_location(board, col):
     return board[ROWS-1][col] == 0
@@ -219,7 +218,7 @@ while not game_over:
 
                 if is_valid_location(board, col):
                     row = get_next_open_row(board, col)
-                    drop_piece(board, row, col, 1)
+                    drop_piece(row, col, 1)
 
                     if winning_move(1):
                         print("Player 1 wins!")
@@ -234,7 +233,7 @@ while not game_over:
                 bot_col = bot_move(board)
                 if is_valid_location(board, bot_col):
                     bot_row = get_next_open_row(board, bot_col)
-                    drop_piece(board, bot_row, bot_col, 2)
+                    drop_piece(bot_row, bot_col, 2)
                     
                     if winning_move(2):
                         print("Player 2 wins!")
