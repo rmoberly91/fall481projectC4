@@ -84,9 +84,8 @@ def minimax(board, depth, alpha, beta, is_max):
         v = -np.inf
         best_col = random.choice(all_plays)
         for c in all_plays:
-            #row = get_next_open_row(board, c)
+            row = get_next_open_row(board, c)
             temp_board = board.copy()
-            row = get_next_open_row(temp_board, c)
             bot_drop_piece(temp_board, row, c, BOT_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, False)[1]
             if ingest_score > v:
@@ -101,9 +100,8 @@ def minimax(board, depth, alpha, beta, is_max):
         v = np.inf
         best_col = random.choice(all_plays)
         for c in all_plays:
-            #row = get_next_open_row(board, c)
+            row = get_next_open_row(board, c)
             temp_board = board.copy()
-            row = get_next_open_row(temp_board, c)
             bot_drop_piece(temp_board, row, c, PLAYER_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, True)[1]
             if ingest_score < v:

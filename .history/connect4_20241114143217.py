@@ -212,33 +212,31 @@ while not game_over:
         if event.type == pygame.MOUSEBUTTONDOWN:
             pygame.draw.rect(screen, BLACK, (0, 0, WIDTH, SQUARE_SIZE))
             # Player 1 Input
-            if turn == 0:
-                pos_x = event.pos[0]
-                col = pos_x // SQUARE_SIZE
+            #if turn == 0:
+            pos_x = event.pos[0]
+            col = pos_x // SQUARE_SIZE
 
-                if is_valid_location(board, col):
-                    row = get_next_open_row(board, col)
-                    drop_piece(row, col, 1)
+            if is_valid_location(board, col):
+                row = get_next_open_row(board, col)
+                drop_piece(row, col, 1)
 
-                    if winning_move(1):
-                        print("Player 1 wins!")
-                        game_over = True
-
-                else:
-                    continue
+                if winning_move(1):
+                    print("Player 1 wins!")
+                    game_over = True
+            else:
+                continue
 
 
             # Player 2 Input
-            else:
-                bot_col = bot_move(board)
-                if is_valid_location(board, bot_col):
-                    bot_row = get_next_open_row(board, bot_col)
-                    drop_piece(bot_row, bot_col, 2)
-                    
-                    if winning_move(2):
-                        print("Player 2 wins!")
-                        game_over = True
+            #else:
+            bot_col = bot_move(board)
+            if is_valid_location(board, bot_col):
+                bot_row = get_next_open_row(board, bot_col)
+                drop_piece(bot_row, bot_col, 2)
 
+                if winning_move(2):
+                    print("Player 2 wins!")
+                    game_over = True
                 else:
                     continue
 

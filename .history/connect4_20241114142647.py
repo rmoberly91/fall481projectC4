@@ -16,6 +16,8 @@ BOT_PIECE = 2
 
 def position_evaluation(board, piece):
     score = 0
+    #Lorem Ipsum
+    # Priority strategy is building in the center
     c_arr = [int(board[i][COLS//2]) for i in range(ROWS)]
     c_count = c_arr.count(piece)
     score += c_count * 4
@@ -62,7 +64,7 @@ def evaluate_moves(block, piece):
 
     return score
     
-def minimax(board, depth, alpha, beta, is_max):
+def minimax( board, depth, alpha, beta, is_max):
     #checks for all available plays
     all_plays = [p for p in range(COLS) if is_valid_location(board, p)]
         
@@ -84,9 +86,8 @@ def minimax(board, depth, alpha, beta, is_max):
         v = -np.inf
         best_col = random.choice(all_plays)
         for c in all_plays:
-            #row = get_next_open_row(board, c)
+            row = get_next_open_row(board, c)
             temp_board = board.copy()
-            row = get_next_open_row(temp_board, c)
             bot_drop_piece(temp_board, row, c, BOT_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, False)[1]
             if ingest_score > v:
@@ -101,9 +102,8 @@ def minimax(board, depth, alpha, beta, is_max):
         v = np.inf
         best_col = random.choice(all_plays)
         for c in all_plays:
-            #row = get_next_open_row(board, c)
+            row = get_next_open_row(board, c)
             temp_board = board.copy()
-            row = get_next_open_row(temp_board, c)
             bot_drop_piece(temp_board, row, c, PLAYER_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, True)[1]
             if ingest_score < v:
