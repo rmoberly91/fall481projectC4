@@ -70,7 +70,7 @@ def minimax( board, depth, alpha, beta, is_max):
     #these are all situations where the game is over
     end_of_game = winning_move(BOT_PIECE) or winning_move(PLAYER_PIECE) or len(all_plays) == 0
 
-    if(depth == 0 or end_of_game):
+    if depth == 0 or end_of_game:
         if end_of_game:
             if winning_move(BOT_PIECE):
                 return None, 1124
@@ -85,7 +85,7 @@ def minimax( board, depth, alpha, beta, is_max):
         v = -np.inf
         best_col = all_plays[0]
         for c in all_plays:
-            row = get_next_open_row(c)
+            row = get_next_open_row(board, c)
             temp_board = board.copy()
             bot_drop_piece(temp_board, row, c, BOT_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, False)[1]
@@ -101,7 +101,7 @@ def minimax( board, depth, alpha, beta, is_max):
         v = np.inf
         best_col = all_plays[0]
         for c in all_plays:
-            row = get_next_open_row(c)
+            row = get_next_open_row(board, c)
             temp_board = board.copy()
             bot_drop_piece(temp_board, row, c, PLAYER_PIECE)
             ingest_score = minimax(temp_board, depth - 1, alpha, beta, True)[1]
@@ -114,16 +114,9 @@ def minimax( board, depth, alpha, beta, is_max):
         return best_col, v
     
 def bot_move(board):
-    max_depth = 5
-    col = minimax(board, max_depth, -np.inf, np.inf, True)
+    max_depth = 4
+    col, _ = minimax(board, max_depth, -np.inf, np.inf, True)
     return col
-# Note: Bot is not integrated to program, we've gotta still do that!
- 
-# TODO: Verify bot logic works with going first/second
-#       Test bot once operational
-#       
-
-# Constants
 
 
 # Colors
@@ -162,10 +155,9 @@ def bot_drop_piece(b_board, row, col, piece):
     b_board[row][col] = piece
 
 def is_valid_location(board, col):
-    r = get_next_open_row(col)
-    return board[r][col] == 0
-    
-def get_next_open_row(col):
+    return board[ROWS-1][col] == 0
+
+def get_next_open_row(board, col):
     for r in range(ROWS):
         if board[r][col] == 0:
             return r
@@ -223,7 +215,7 @@ while not game_over:
                 col = pos_x // SQUARE_SIZE
 
                 if is_valid_location(board, col):
-                    row = get_next_open_row(col)
+                    row = get_next_open_row(board, col)
                     drop_piece(row, col, 1)
 
                     if winning_move(1):
@@ -236,10 +228,10 @@ while not game_over:
 
             # Player 2 Input
             else:
-                col = bot_move(board)
-                if is_valid_location(board, col):
-                    row = get_next_open_row(col)
-                    drop_piece(row, col, 2)
+                bot_col = bot_move(board)
+                if is_valid_location(board, bot_col):
+                    bot_row = get_next_open_row(board, bot_col)
+                    drop_piece(bot_row, bot_col, 2)
                     
                     if winning_move(2):
                         print("Player 2 wins!")
