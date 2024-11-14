@@ -16,7 +16,51 @@ BOT_PIECE = 2
 def position_evaluation(board, piece):
     score = 0
     #Lorem Ipsum
-    # 
+    # Priority strategy is building in the center
+    c_arr = [int(board[i][COLS//2]) for i in range(ROWS)]
+    c_count = c_arr.count(piece)
+    score += c_count * 4
+    
+    #Horizontal scoring
+    for h in range(ROWS):
+        h_array = [int(board[h][c]) for c in range(COLS)]
+        for c in range(COLS - 3):
+            tally = h_array[h:h + 4]
+            score += evaluate_moves(tally, piece)
+    #Vertical Scoring
+    for v in range(COLS):
+        v_array = [int(board[r][v]) for r in range(ROWS)]
+        for r in range(ROWS - 3):
+            tally = v_array[v:v + 4]
+            score += evaluate_moves(tally, piece)
+    #Score Diagonal
+    for r in range(ROWS - 3):
+        for c in range(COLS - 3):
+            tally = [board[r+i][c+i] for i in range(4)]
+            score += evaluate_moves(tally, piece)
+    for r in range(ROWS - 3):
+        for c in range(COLS - 3):
+            rally = [board[r + 3 - i][c + i] for i in range(4)]
+            score += evaluate_moves(tally, piece)
+    return score
+
+def evaluate_moves(block, piece):
+    score = 0
+    if piece == BOT_PIECE:
+        opposition = PLAYER_PIECE
+    else:
+        opposition = BOT_PIECE
+    
+    if block.count(piece) == 4:
+        score += 500
+    elif block.count(piece) == 3 and block.count(0) == 1:
+        score += 25
+    elif block.count(piece) == 2 and block.count(0) == 2:
+        score += 10
+    
+    if block.count(opposition) == 3 and block.count(0) == 1:
+        score -= 20
+
     return score
     
 def minimax( board, depth, alpha, beta, is_max):
@@ -68,6 +112,11 @@ def minimax( board, depth, alpha, beta, is_max):
             if alpha >= beta:
                 break
         return best_col, v
+    
+def bot_move(board):
+    max_depth = 5
+    col, _ = minimax(board, max_depth, -np.inf, np.inf, True)
+    return col
 # Note: Bot is not integrated to program, we've gotta still do that!
  
 # TODO: Verify bot logic works with going first/second
@@ -186,7 +235,7 @@ while not game_over:
 
             # Player 2 Input
             else:
-                #col = bot.best_move(1)
+                col = bot_move(board)
                 if col >= 0:
                     row = get_next_open_row(col)
                     drop_piece(row, col, 2)
