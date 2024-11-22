@@ -158,11 +158,7 @@ def drop_piece(board, row, col, piece):
 #    b_board[row][col] = piece
 
 def is_valid_location(board, col):
-    for r in range(ROWS):
-        if board[r][col] == 0:
-            return True
-        else:
-            return False
+    return board[ROWS - 1][col] == 0
 
 def get_next_open_row(board, col):
     for r in range(ROWS):
