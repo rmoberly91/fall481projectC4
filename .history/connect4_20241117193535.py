@@ -39,7 +39,7 @@ def position_evaluation(board, piece):
             score += evaluate_moves(tally, piece)
     for r in range(ROWS - 3):
         for c in range(COLS - 3):
-            tally = [board[r + 3 - i][c + i] for i in range(4)]
+            rally = [board[r + 3 - i][c + i] for i in range(4)]
             score += evaluate_moves(tally, piece)
     return score
 
