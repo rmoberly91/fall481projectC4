@@ -151,8 +151,18 @@ def draw_board():
 def drop_piece(board, row, col, piece):
     board[row][col] = piece
 
+# Function for the bot to drop pieces into a copy of the board for the minimax function
+# Deprecated 
+#def bot_drop_piece(board, row, col, piece):
+#    b_board = board.copy()
+#    b_board[row][col] = piece
+
 def is_valid_location(board, col):
-    return board[ROWS-1][col] == 0
+    for r in range(ROWS):
+        if board[r][col] == 0:
+            return True
+        else:
+            return False
 
 def get_next_open_row(board, col):
     for r in range(ROWS):
