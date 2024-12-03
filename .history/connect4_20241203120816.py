@@ -46,22 +46,21 @@ def position_evaluation(board, piece):
 def evaluate_moves(block, piece):
     score = 0
 
+    empty = 0
+
     if piece == BOT_PIECE:
         opposition = PLAYER_PIECE
     else:
         opposition = BOT_PIECE
     
-    #Bot sees a winning move
     if block.count(piece) == 4:
         score += 500
-    #Bot sees a move where it can win on its next move
-    elif block.count(piece) == 3 and block.count(0) == 1:
+    elif block.count(piece) == 3 and block.count(empty) == 1:
         score += 25
-    #Bot sees this favorably
-    elif block.count(piece) == 2 and block.count(0) == 2:
+    elif block.count(piece) == 2 and block.count(empty) == 2:
         score += 10
-    #Bot sees an opponents winning move
-    if block.count(opposition) == 3 and block.count(0) == 1:
+    
+    if block.count(opposition) == 3 and block.count(empty) == 1:
         score -= 20
 
     return score
@@ -76,7 +75,6 @@ def minimax(board, depth, alpha, beta, is_max):
     if depth == 0 or end_of_game:
         if end_of_game:
             if winning_move(BOT_PIECE):
-                #number is arbitrary, in this case is the current episode count of One Piece
                 return None, 1124
             elif winning_move(PLAYER_PIECE):
                 return None, -1124
@@ -200,6 +198,7 @@ game_over = False
 turn = 0  # 0 for Player 1 (RED), 1 for Player 2 (YELLOW)
 
 draw_board()  # Initial draw
+#bot = ConnectFourBot(ROWS, COLS)
 
 while not game_over:
     for event in pygame.event.get():
