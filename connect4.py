@@ -81,11 +81,11 @@ def minimax(board, depth, alpha, beta, is_max):
 
     if depth == 0 or end_of_game:
         if end_of_game:
-            #Using an arbitrary number to determine outcome, in this case I just used the current episode count of One Piece...
+            #Using an arbitrary number to determine outcome, in this case I just used the current episode count of One Piece times 100
             if winning_move(board, BOT_PIECE):
-                return None, 1124
+                return None, 112400
             elif winning_move(board, PLAYER_PIECE):
-                return None, -1124
+                return None, -112400
             else:
                 return None, 0
         else:
