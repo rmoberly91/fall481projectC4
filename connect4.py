@@ -5,6 +5,7 @@ import random
 
 pygame.init()
 
+#Basic implementation of Connect 4 parameters in PyGame
 WIDTH, HEIGHT = 700, 700  # Height increased to add a top row for drop selection
 ROWS, COLS = 6, 7
 SQUARE_SIZE = 100
@@ -13,7 +14,9 @@ board = [[0 for _ in range(COLS)] for _ in range(ROWS)]
 PLAYER_PIECE = 1
 BOT_PIECE = 2
 
-
+#Evaluation function used to get a simple score from board positions
+#Strategy: the bot scores the middle of the board higher than other sections
+#
 def position_evaluation(board, piece):
     score = 0
     c_arr = [int(board[i][COLS//2]) for i in range(ROWS)]
@@ -43,6 +46,9 @@ def position_evaluation(board, piece):
             score += evaluate_moves(tally, piece)
     return score
 
+#This function evaluates the specific moves on the board
+#Implementation is fairly simple, the more pieces it can line up in a row, the higher the score
+#Similarly, if it sees a winning move or nearly a winning move, it looks to block that move
 def evaluate_moves(block, piece):
     score = 0
 
@@ -53,21 +59,22 @@ def evaluate_moves(block, piece):
     
     #Bot sees a winning move
     if block.count(piece) == 4:
-        score += 500
+        score += 50
     #Bot sees a move where it can win on its next move
     elif block.count(piece) == 3 and block.count(0) == 1:
-        score += 25
+        score += 6
     #Bot sees this favorably
     elif block.count(piece) == 2 and block.count(0) == 2:
-        score += 10
+        score += 3
     #Bot sees an opponents winning move
     if block.count(opposition) == 3 and block.count(0) == 1:
-        score -= 20
+        score -= 8
 
     return score
     
+#Main minimax function to search the tree for plays
 def minimax(board, depth, alpha, beta, is_max):
-    #checks for all available plays
+    #checks for all available plays, aka every column a piece can be played
     all_plays = [p for p in range(COLS) if is_valid_location(board, p)]
         
     #these are all situations where the game is over
@@ -76,7 +83,7 @@ def minimax(board, depth, alpha, beta, is_max):
     if depth == 0 or end_of_game:
         if end_of_game:
             if winning_move(BOT_PIECE):
-                #number is arbitrary, in this case is the current episode count of One Piece
+                #number is arbitrary, in this case is the current episode count of One Piece 
                 return None, 1124
             elif winning_move(PLAYER_PIECE):
                 return None, -1124
@@ -85,6 +92,7 @@ def minimax(board, depth, alpha, beta, is_max):
         else:
             return None, position_evaluation(board, BOT_PIECE)
         
+    #Checks if it is maximizing or minimizing. In this case, maximizing
     if is_max:
         v = -np.inf
         best_col = random.choice(all_plays)
@@ -170,6 +178,7 @@ def get_next_open_row(board, col):
         if board[r][col] == 0:
             return r
 
+#Simple check for a winning move
 def winning_move(piece):
     # Check horizontal locations
     for c in range(COLS - 3):
