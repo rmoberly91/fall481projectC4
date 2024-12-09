@@ -94,6 +94,7 @@ def minimax(board, depth, alpha, beta, is_max):
     #Maximizing
     if is_max:
         v = -np.inf
+        #best_col = random.choice(all_plays)
         for c in all_plays:
             row = get_next_open_row(board, c)
             temp_board = copy.deepcopy(board)
@@ -110,6 +111,7 @@ def minimax(board, depth, alpha, beta, is_max):
     #Minimizing
     else:
         v = np.inf
+        #best_col = random.choice(all_plays)
         for c in all_plays:
             row = get_next_open_row(board, c)
             temp_board = copy.deepcopy(board)
